@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^6.11.2",
+    "@aws-sdk/client-cognito-identity-provider": "^3.817.0",
+    "aws-sdk": "^2.1692.0",
+    "oidc-client-ts": "^3.2.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-oidc-context": "^3.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
