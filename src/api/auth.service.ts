@@ -1,5 +1,6 @@
 import {
     CognitoIdentityProviderClient,
+    ConfirmSignUpCommand,
     InitiateAuthCommand,
     SignUpCommand,
   } from "@aws-sdk/client-cognito-identity-provider";
@@ -40,18 +41,14 @@ import {
   };
   
 
-  export const signUp = async (email: string) => {
+  export const signUp = async (email: string, nickName: string) => {
     const command = new SignUpCommand({
       ClientId: CLIENT_ID, 
   Username: email, 
   UserAttributes: [
     {
-      Name: "email",
-      Value: email,
-    },
-    {
-      Name: "nickname", // Must be all lowercase, even if in the error it's camelCase
-      Value: email,
+      Name: "nickname", 
+      Value: nickName,
     },
   ],
     });
@@ -65,3 +62,20 @@ import {
     }
   };
   
+
+  export const confirmSignUpUser = async (email: string, code: string) => {
+    const command = new ConfirmSignUpCommand({
+      ClientId: CLIENT_ID,
+      Username: email,
+      ConfirmationCode: code,
+    });
+  
+    try {
+      const response = await cognitoClient.send(command);
+      console.log("Confirmation success:", response);
+      return response;
+    } catch (error) {
+      console.error("Confirmation error:", error);
+      throw error;
+    }
+  };
