@@ -1,8 +1,9 @@
 // index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { Theme, ThemeProvider } from "@aws-amplify/ui-react";
+import { Router } from "./Router";
+import { AuthProvider } from "./context/AuthContext";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
@@ -22,7 +23,9 @@ const theme: Theme = {
 root.render(
   <React.StrictMode>
       <ThemeProvider theme={theme}>
-      <App />
+  <AuthProvider>
+      <Router />
+  </AuthProvider>
       </ThemeProvider>
   </React.StrictMode>
 );

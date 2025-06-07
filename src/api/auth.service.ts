@@ -5,11 +5,34 @@ import {
   InitiateAuthCommand,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
+import { CognitoJwtVerifier } from "aws-jwt-verify";
 
-const REGION = process.env.REACT_APP_REGION; // replace with your region
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID; // replace with your Cognito App Client ID
+const REGION = import.meta.env.VITE_REGION; // replace with your region
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID; // replace with your Cognito App Client ID
+const USER_POOL_ID = import.meta.env.VITE_USER_POOL_ID
 
 const cognitoClient = new CognitoIdentityProviderClient({ region: REGION });
+
+export const verifyJWT = async (token: string) =>  {
+  try {
+    const verifier = CognitoJwtVerifier.create({
+      userPoolId: USER_POOL_ID as string,
+      tokenUse: "access",
+      clientId: CLIENT_ID,
+    });
+
+    const payload = await verifier.verify(token,  {
+      clientId: CLIENT_ID as string,
+      tokenUse: "access",
+    });
+    console.log('Decoded JWT:', payload);
+    return true;
+  } catch (err) {
+    console.error('Error verifying JWT:', err);
+    return false;
+  }
+}
+
 
 export const signIn = async (username: string, password: string) => {
   const command = new InitiateAuthCommand({
