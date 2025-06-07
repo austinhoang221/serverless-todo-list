@@ -1,12 +1,7 @@
-import React, { useState } from "react";
-import { signIn, signUp } from "./api/auth.service";
-import { AuthProvider } from "./context/AuthContext";
+import "./App.css";
 
 const LoginForm = () => {
-  return(
-      <>HELLO</>
-  ) 
-  
+  return <>HELLO</>;
 };
 
 export default LoginForm;

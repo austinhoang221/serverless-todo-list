@@ -1,39 +1,42 @@
 import React from "react";
-import { signIn, signUp } from "../../api/auth.service";
-import { useAuth } from "../../customHooks/useAuth";
+import { Flex, Tabs, View } from "@aws-amplify/ui-react";
+import { Login } from "./Login";
+import SignUp from "./SignUp";
+import { useParams } from "react-router";
+import "./Authentication.css";
 
 export const Authentication = () => {
-    const { token, userName, setAuth } = useAuth();
-    const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [nickName, setNickName] = React.useState("");
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await signIn(username, password);
-      console.log("Login result:", result);
-    } catch (err) {
-      alert("Login failed: " + err);
-    }
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await signUp(username, nickName);
-      console.log("Login result:", result);
-    } catch (err) {
-      alert("Login failed: " + err);
-    }
-  };
-
+  // const { token, userName, setAuth } = useAuth();
+  const params = useParams();
+  const [tab, setTab] = React.useState(params?.type);
   return (
-
-    <form onSubmit={handleSignUp}>
-      <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Login</button>
-    </form>
+    <View display="flex" height="100vh">
+      <View
+        maxWidth="400px"
+        margin="auto"
+        padding="2rem"
+        borderRadius="6px"
+        border="1px solid var(--amplify-colors-primary-40)"
+        className="authentication"
+        boxShadow="3px 3px 5px 6px var(--amplify-colors-primary-20)"
+      >
+        <Flex direction="column" gap="2rem">
+          <Tabs.Container
+            defaultValue="login"
+            value={tab}
+            onValueChange={(tab) => setTab(tab)}
+            isLazy
+          >
+            <Tabs.List spacing="equal"></Tabs.List>
+            <Tabs.Panel value="login">
+              <Login />
+            </Tabs.Panel>
+            <Tabs.Panel value="signUp">
+              <SignUp />
+            </Tabs.Panel>
+          </Tabs.Container>
+        </Flex>
+      </View>
+    </View>
   );
-}
+};
