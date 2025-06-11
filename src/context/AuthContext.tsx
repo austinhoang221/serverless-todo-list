@@ -7,7 +7,7 @@ interface AuthContextType {
   refreshToken: string;
   token: string;
   userName: string;
-  user: AdminGetUserCommandOutput;
+  user: any;
   setAuth: (auth: Partial<AuthContextType>) => void;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -15,7 +15,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [authState, setAuthState] = React.useState<Omit<AuthContextType, 'setAuth'>>({
+  const [authState, setAuthState] = React.useState<
+    Omit<AuthContextType, "setAuth">
+  >({
     loginResult: "",
     refreshToken: "",
     token: "",
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       ...prev,
       ...auth,
     }));
+    localStorage.setItem("context", JSON.stringify(auth));
   };
 
   return (

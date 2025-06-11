@@ -5,28 +5,56 @@ import {
   Link,
   TextField,
   Text,
+  View,
 } from "@aws-amplify/ui-react";
 import React from "react";
 import { signUp } from "../../api/auth.service";
+import { useNavigate } from "react-router";
+import { useAuth } from "../../customHooks/useAuth";
 
 const SignUp = () => {
-  const [formData, setFormData] = React.useState({ email: "", nickName: "" });
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
+  const [formData, setFormData] = React.useState({
+    email: "",
+    nickName: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = React.useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSignup = async () => {
     try {
-      const result = await signUp(formData?.email, formData?.nickName);
-      console.log("Login result:", result);
+      setIsLoading(true);
+      const result = await signUp(
+        formData?.email,
+        formData?.nickName,
+        formData?.password
+      );
+      if (result) {
+        setAuth({ userName: formData?.email });
+        navigate(`/confirmCode/?email=${encodeURIComponent(formData?.email)}`);
+      }
     } catch (err) {
       alert("Login failed: " + err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
+    <View
+      maxWidth="400px"
+      margin="auto"
+      padding="2rem"
+      borderRadius="6px"
+      border="1px solid var(--amplify-colors-primary-40)"
+      className="authentication"
+      boxShadow="3px 3px 5px 6px var(--amplify-colors-primary-20)"
+    >
       <Heading variation="primary" level={4}>
         Sign Up
       </Heading>
@@ -34,15 +62,20 @@ const SignUp = () => {
         <TextField
           name="email"
           label="Email"
-          errorMessage="123"
           hasError
           type="email"
           onChange={handleChange}
         />
         <TextField
-          name="password"
+          name="nickName"
           label="Nick name"
           type="text"
+          onChange={handleChange}
+        />
+        <TextField
+          name="password"
+          label="Password"
+          type="password"
           onChange={handleChange}
         />
         <Text>
@@ -51,11 +84,15 @@ const SignUp = () => {
             <Link href="/login">Login</Link>
           </Button>
         </Text>
-        <Button variation="primary" onClick={handleSignup}>
+        <Button
+          variation="primary"
+          isLoading={isLoading}
+          onClick={handleSignup}
+        >
           Sign Up
         </Button>
       </Flex>
-    </>
+    </View>
   );
 };
 
