@@ -9,11 +9,12 @@ import {
 } from "@aws-amplify/ui-react";
 import React from "react";
 import { signIn } from "../../api/auth.service";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../customHooks/useAuth";
 
 export const Login = () => {
   const { setAuth } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = React.useState({ email: "", password: "" });
   const [searchParams] = useSearchParams();
 
@@ -37,7 +38,9 @@ export const Login = () => {
         for (const [key, value] of Object.entries(result.attributes ?? {})) {
           userAttr.push({ [key]: value });
         }
-        setAuth({ ...result, user: userAttr });
+        setAuth({  ...result, loginResult: 'Successfully',
+       user: userAttr });
+        navigate('/')
       }
       console.log("Login result:", result);
     } catch (err) {

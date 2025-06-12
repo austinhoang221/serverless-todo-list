@@ -51,11 +51,11 @@ export const signIn = async (username: string, password: string) => {
       const { AccessToken, IdToken, RefreshToken } =
         response.AuthenticationResult;
       // You can now store these tokens (e.g., localStorage) or use them as needed
+      if (AccessToken) {
       const command = new GetUserCommand({
         AccessToken: AccessToken,
       });
 
-      if (IdToken) {
         const getUserResponse = await cognitoClient.send(command);
         const { Username, UserAttributes } = getUserResponse;
         return {

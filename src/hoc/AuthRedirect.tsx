@@ -6,14 +6,14 @@ import { verifyJWT } from "../api/auth.service";
 const validTypes = ["login", "signUp"];
 
 const AuthRedirect = () => {
-  const { token } = useAuth();
+  const { accessToken } = useAuth();
   const navigate = useNavigate();
   const { type } = useParams();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const verifyToken = async () => {
-      const isValid = await verifyJWT(token);
+      const isValid = await verifyJWT(accessToken);
 
       if (isValid) {
         navigate("/", { replace: true });
@@ -26,7 +26,7 @@ const AuthRedirect = () => {
     };
 
     verifyToken();
-  }, [token, type, navigate]);
+  }, [accessToken, type, navigate]);
 
   // Optional loading state
   return !checked ? <div>Checking authentication...</div> : null;

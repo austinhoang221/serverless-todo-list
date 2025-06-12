@@ -5,7 +5,7 @@ import { createContext } from "react";
 interface AuthContextType {
   loginResult: string;
   refreshToken: string;
-  token: string;
+  accessToken: string;
   userName: string;
   user: any;
   setAuth: (auth: Partial<AuthContextType>) => void;
@@ -20,9 +20,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   >({
     loginResult: "",
     refreshToken: "",
-    token: "",
+    accessToken: "",
     userName: "",
-    user: {} as AdminGetUserCommandOutput,
+    user: {} ,
   });
 
   const setAuth = (auth: Partial<AuthContextType>) => {

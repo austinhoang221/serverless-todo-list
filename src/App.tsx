@@ -6,16 +6,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { Router } from "./Router";
 import "@aws-amplify/ui-react/styles.css";
 
-const LoginForm = () => {
-  const { setAuth } = useAuth();
-  React.useEffect(() => {
-    try {
-      if (localStorage.getItem("context"))
-        setAuth(JSON.parse(localStorage.getItem("context")!));
-    } catch {
-      console.error("Error parsing context");
-    }
-  }, []);
+const App = () => {
+
 
   return (
     <ThemeProvider>
@@ -26,4 +18,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default App;

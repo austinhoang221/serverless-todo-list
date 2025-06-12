@@ -5,15 +5,22 @@ import { Navigate } from "react-router";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const [valid, setValid] = React.useState<boolean | null>(null); // null = loading
-  const { token } = useAuth();
 
   React.useEffect(() => {
     const verifyToken = async () => {
-      const res = await verifyJWT(token);
-      setValid(res);
+      if(localStorage.getItem('context')){
+        try{
+          const accessToken = JSON.parse(localStorage.getItem('context') as string)?.accessToken
+          const res = await verifyJWT(accessToken);
+          setValid(res);
+        }
+        catch{
+          console.error('Error passing context')
+        }
+      }
     };
     verifyToken();
-  }, [token]);
+  }, []);
 
   if (valid === null) {
     return <div>Loading...</div>;
