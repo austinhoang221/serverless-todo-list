@@ -7,13 +7,21 @@ import { Router } from "./Router";
 import "@aws-amplify/ui-react/styles.css";
 
 const App = () => {
+    const {setAuth } = useAuth();
+  
+  React.useEffect(() => {
+    try {
+      if (localStorage.getItem("context"))
+        setAuth(JSON.parse(localStorage.getItem("context")!));
+    } catch {
+      console.error("Error parsing context");
+    }
+  }, []);
 
 
   return (
     <ThemeProvider>
-      <AuthProvider>
         <Router />
-      </AuthProvider>
     </ThemeProvider>
   );
 };

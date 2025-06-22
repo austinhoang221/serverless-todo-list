@@ -1,0 +1,10 @@
+.datepicker-cell.selected, .datepicker-cell.selected:hover
+{
+    background-color: var(--amplify-colors-brand-primary-80);
+}
+
+.datepicker-cell.day.today:not(.selected)
+{
+    color: unset;
+    background-color: var(--amplify-colors-neutral-20);
+}

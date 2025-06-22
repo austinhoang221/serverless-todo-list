@@ -5,7 +5,7 @@ import { verifyJWT } from "../api/auth.service";
 
 const validTypes = ["login", "signUp"];
 
-const AuthRedirect = () => {
+const AuthRedirect = () => { 
   const { accessToken } = useAuth();
   const navigate = useNavigate();
   const { type } = useParams();

@@ -1,13 +1,14 @@
 import { AdminGetUserCommandOutput } from "@aws-sdk/client-cognito-identity-provider";
 import React from "react";
 import { createContext } from "react";
+import { IUser } from "../models/interfaces/IUser";
 
 interface AuthContextType {
   loginResult: string;
   refreshToken: string;
   accessToken: string;
   userName: string;
-  user: any;
+  user: IUser;
   setAuth: (auth: Partial<AuthContextType>) => void;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -22,7 +23,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refreshToken: "",
     accessToken: "",
     userName: "",
-    user: {} ,
+    user: {
+      email: '',
+      email_verified: false,
+      userId: '',
+      userName: '',
+      nickname: '',
+      sub: ''
+    } ,
   });
 
   const setAuth = (auth: Partial<AuthContextType>) => {
@@ -30,7 +38,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       ...prev,
       ...auth,
     }));
-    localStorage.setItem("context", JSON.stringify(auth));
   };
 
   return (

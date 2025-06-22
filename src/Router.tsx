@@ -2,9 +2,9 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import ConfirmCode from "./pages/auth/ConfirmCode";
 import AuthRedirect from "./hoc/AuthRedirect";
 import PrivateRoute from "./hoc/PrivateRoute";
-import { TodoList } from "./pages/home/TodoList";
 import { Login } from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
+import { Home } from "./pages/home/Home";
 
 export const Router = () => {
   return (
@@ -14,7 +14,7 @@ export const Router = () => {
           path="/"
           element={
             <PrivateRoute>
-              <TodoList />
+              <Home />
             </PrivateRoute>
           }
         />

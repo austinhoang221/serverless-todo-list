@@ -11,12 +11,14 @@ import React from "react";
 import { signIn } from "../../api/auth.service";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../customHooks/useAuth";
+import { IUser } from "../../models/interfaces/IUser";
 
 export const Login = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = React.useState({ email: "", password: "" });
   const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     const emailParam = searchParams.get("email");
@@ -32,19 +34,35 @@ export const Login = () => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true)
       const result = await signIn(formData?.email, formData?.password);
       if (result) {
-        const userAttr = [];
-        for (const [key, value] of Object.entries(result.attributes ?? {})) {
-          userAttr.push({ [key]: value });
-        }
-        setAuth({  ...result, loginResult: 'Successfully',
+        const userAttr: IUser = {
+             email: '',
+      email_verified: false,
+      userId: '',
+      userName: '',
+      nickname: '',
+      sub: ''
+        };
+     
+        result.attributes?.forEach(attr => {
+       (userAttr[attr.Name as string as keyof IUser] as string) = attr.Value ?? '';
+        })
+        userAttr.userId = result.userId ?? '';
+        
+        setAuth({ ...result, loginResult: 'Successfully',
        user: userAttr });
+       localStorage.setItem('context', JSON.stringify({ ...result, loginResult: 'Successfully',
+       user: userAttr }))
         navigate('/')
       }
       console.log("Login result:", result);
     } catch (err) {
       alert("Login failed: " + err);
+    }
+    finally{
+      setIsLoading(false)
     }
   };
   return (
@@ -79,7 +97,7 @@ export const Login = () => {
             <Link href="/signUp">Sign Up</Link>
           </Button>
         </Text>
-        <Button variation="primary" onClick={handleLogin}>
+        <Button variation="primary" onClick={handleLogin} isLoading={isLoading}>
           Login
         </Button>
       </Flex>
