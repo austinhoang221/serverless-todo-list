@@ -13,18 +13,19 @@ import { TodoList } from "./table/TodoList";
 import { InputTodo } from "./components/InputTodo";
 
 export const Home = () => {
-      const { user } = useAuth();
+      const { user, accessToken } = useAuth();
     const [todos, setTodos] = React.useState<ITodo[]>([]);
+        const [searchValue, setSearchValue] = React.useState("")
     
   React.useEffect(() => {
     
     const fetchData = async () => {
-      const response = await GetListTodo();
+      const response = await GetListTodo(searchValue);
       setTodos(response?.body)
     }
 
-    fetchData();
-  }, [])
+    if(accessToken) fetchData();
+  }, [accessToken, searchValue])
 
   const onCreate = (todo: ITodo) => {
     const newList = [...todos];
@@ -48,7 +49,7 @@ export const Home = () => {
 
   return (
     <>
-      <Nav />
+      <Nav onSearch={setSearchValue} searchValue={searchValue}/>
       <Flex direction="column" gap="2rem" margin="18px">
         <Heading level={4}>
           Welcome, {user?.nickname} 👋

@@ -1,17 +1,15 @@
+import { getAuthHeaders } from "./base.service";
 import { APIResponseModel } from "./models/APIResponseModel";
 import { CreateTodoRequestModel } from "./models/CreateTodoRequestModel";
 
 const API_URL = import.meta.env.VITE_API_URL
-const accessToken = JSON.parse(localStorage.getItem('context')!)?.accessToken
-const  headers=  {
-               "Content-Type": "application/json",
-               "Authorization": "Bearer " + accessToken
-        }
-export const GetListTodo = async () => {
+
+export const GetListTodo = async (searchText?: string) => {
+  const url = searchText ?  API_URL + `?search=${searchText}` : API_URL;
    try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(url, {
         method: 'GET',
-      headers: headers,
+      headers: getAuthHeaders(),
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
@@ -28,7 +26,7 @@ export const DeleteTodo = async (id: string) => {
    try {
     const response = await fetch(API_URL + `/${id}` , {
         method: 'DELETE',
-      headers: headers,
+      headers: getAuthHeaders(),
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
@@ -45,7 +43,7 @@ export const UpdateTodo = async (id: string, payload: { [key: string]: string | 
    try {
     const response = await fetch(API_URL + `/${id}` , {
         method: 'PATCH',
-      headers: headers,
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload)        
     });
     if (!response.ok) {
@@ -63,7 +61,7 @@ export const CreateTodo = async (payload: CreateTodoRequestModel) => {
    try {
     const response = await fetch(API_URL, {
         method: 'POST',
-             headers: headers,
+             headers: getAuthHeaders(),
         body: JSON.stringify(payload)
     });
     if (!response.ok) {

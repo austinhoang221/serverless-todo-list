@@ -36,6 +36,7 @@ export const Login = () => {
     try {
       setIsLoading(true)
       const result = await signIn(formData?.email, formData?.password);
+      
       if (result) {
         const userAttr: IUser = {
              email: '',
@@ -49,13 +50,15 @@ export const Login = () => {
         result.attributes?.forEach(attr => {
        (userAttr[attr.Name as string as keyof IUser] as string) = attr.Value ?? '';
         })
+
         userAttr.userId = result.userId ?? '';
-        
+
+        localStorage.setItem('context', JSON.stringify({ ...result, loginResult: 'Successfully',
+       user: userAttr }))
         setAuth({ ...result, loginResult: 'Successfully',
        user: userAttr });
-       localStorage.setItem('context', JSON.stringify({ ...result, loginResult: 'Successfully',
-       user: userAttr }))
-        navigate('/')
+     
+        navigate('/', {replace: true})
       }
       console.log("Login result:", result);
     } catch (err) {

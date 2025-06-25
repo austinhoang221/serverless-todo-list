@@ -47,7 +47,7 @@ const deleteTodo = async(todoId: string) => {
     </TableHead>
     <TableBody>
         {props.todos?.map(todo => (
-            <TableRow>
+            <TableRow key={todo.todoId}>
                 <TableCell>{todo.title}</TableCell>
                 <TableCell>{todo.deadline ? dayjs(todo.deadline).format('MM/DD/YYYY') : ""}</TableCell>
                 <TableCell textAlign="center" >{todo.prioritized ? <Star cursor="pointer" fill="yellow" onClick={() => onChangePrioritize(todo, false)} /> : <Star onClick={() => onChangePrioritize(todo, true)}  cursor="pointer"/> }</TableCell>

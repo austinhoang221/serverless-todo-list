@@ -4,6 +4,7 @@ import { useAuth } from "../../../customHooks/useAuth";
 import React from "react";
 import { DatePicker } from "../../../components/date-picker/DatePicker";
 import { ITodo } from "../../../models/interfaces/ITodo";
+import dayjs from "dayjs";
 
 type InputTodoType = {
   onSubmit: (todo: ITodo) => void
@@ -52,7 +53,7 @@ export const InputTodo = (props: InputTodoType) => {
               alignItems="center"
               backgroundColor="var(--amplify-colors-neutral-10)"
             >
-              <DatePicker value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e })} />
+              <DatePicker value={form.deadline} onChange={(e) => setForm({ ...form, deadline: dayjs(e).format('MM/DD/YYYY')  })} />
               { <Button size="small" onClick={saveTodo} disabled={!form?.title}>
                 {"Add"}
               </Button>

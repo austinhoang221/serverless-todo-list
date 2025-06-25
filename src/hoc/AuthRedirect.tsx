@@ -15,7 +15,7 @@ const AuthRedirect = () => {
     const verifyToken = async () => {
       const isValid = await verifyJWT(accessToken);
 
-      if (isValid) {
+      if (isValid && accessToken) {
         navigate("/", { replace: true });
       } else {
         const targetType = validTypes.includes(type ?? "") ? type : "login";

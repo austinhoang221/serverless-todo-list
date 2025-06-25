@@ -18,6 +18,9 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
           console.error('Error passing context')
         }
       }
+      else{
+        setValid(false)
+      }
     };
     verifyToken();
   }, []);
