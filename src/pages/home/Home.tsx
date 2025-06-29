@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   Heading,
   Text,
@@ -11,6 +12,7 @@ import dayjs from "dayjs";
 import {  GetListTodo } from "../../api/todo.service";
 import { TodoList } from "./table/TodoList";
 import { InputTodo } from "./components/InputTodo";
+import { refreshToken } from "../../api/auth.service";
 
 export const Home = () => {
       const { user, accessToken } = useAuth();
@@ -65,7 +67,9 @@ export const Home = () => {
             {dayjs().format("dddd, MMMM D")}
           </Text>
         </Heading>
-
+        <Button onClick={() => {
+          refreshToken()
+        }}>Refrest</Button>
         <InputTodo onSubmit={onCreate}/>
 
         <Flex direction="column" gap="1rem">

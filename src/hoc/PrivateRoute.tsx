@@ -8,9 +8,9 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     const verifyToken = async () => {
-      if(localStorage.getItem('context')){
+      if(sessionStorage.getItem('context')){
         try{
-          const accessToken = JSON.parse(localStorage.getItem('context') as string)?.accessToken
+          const accessToken = JSON.parse(sessionStorage.getItem('context') as string)?.accessToken
           const res = await verifyJWT(accessToken);
           setValid(res);
         }

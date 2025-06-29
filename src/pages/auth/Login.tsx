@@ -8,10 +8,10 @@ import {
   View,
 } from "@aws-amplify/ui-react";
 import React from "react";
-import { signIn } from "../../api/auth.service";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../customHooks/useAuth";
 import { IUser } from "../../models/interfaces/IUser";
+import { signIn } from "../../api/auth.service";
 
 export const Login = () => {
   const { setAuth } = useAuth();
@@ -46,21 +46,24 @@ export const Login = () => {
       nickname: '',
       sub: ''
         };
-     
-        result.attributes?.forEach(attr => {
+        const response = result.body
+        response.attributes?.forEach((attr: any) => {
        (userAttr[attr.Name as string as keyof IUser] as string) = attr.Value ?? '';
         })
 
-        userAttr.userId = result.userId ?? '';
+        userAttr.userId = response.userId ?? '';
 
-        localStorage.setItem('context', JSON.stringify({ ...result, loginResult: 'Successfully',
+        sessionStorage.setItem('context', JSON.stringify({ accessToken: response.accessToken, loginresponse: 'Successfully',
+          userId: response.userId, 
+          userName: response.userName,
+          challenge: response.challenge,
+
        user: userAttr }))
-        setAuth({ ...result, loginResult: 'Successfully',
+        setAuth({ ...response, loginResult: 'Successfully',
        user: userAttr });
-     
+
         navigate('/', {replace: true})
       }
-      console.log("Login result:", result);
     } catch (err) {
       alert("Login failed: " + err);
     }
