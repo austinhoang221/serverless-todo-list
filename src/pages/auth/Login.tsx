@@ -34,41 +34,46 @@ export const Login = () => {
 
   const handleLogin = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const result = await signIn(formData?.email, formData?.password);
-      
+
       if (result) {
         const userAttr: IUser = {
-             email: '',
-      email_verified: false,
-      userId: '',
-      userName: '',
-      nickname: '',
-      sub: ''
+          email: "",
+          email_verified: false,
+          userId: "",
+          userName: "",
+          nickname: "",
+          sub: "",
         };
-        const response = result.body
+        const response = result.body;
         response.attributes?.forEach((attr: any) => {
-       (userAttr[attr.Name as string as keyof IUser] as string) = attr.Value ?? '';
-        })
+          (userAttr[attr.Name as string as keyof IUser] as string) =
+            attr.Value ?? "";
+        });
 
-        userAttr.userId = response.userId ?? '';
+        userAttr.userId = response.userId ?? "";
 
-        sessionStorage.setItem('context', JSON.stringify({ accessToken: response.accessToken, loginresponse: 'Successfully',
-          userId: response.userId, 
-          userName: response.userName,
-          challenge: response.challenge,
+        sessionStorage.setItem(
+          "context",
+          JSON.stringify({
+            accessToken: response.accessToken,
+            loginresponse: "Successfully",
+            userId: response.userId,
+            userName: response.userName,
+            challenge: response.challenge,
 
-       user: userAttr }))
-        setAuth({ ...response, loginResult: 'Successfully',
-       user: userAttr });
+            user: userAttr,
+          })
+        );
+        setAuth({ ...response, loginResult: "Successfully", user: userAttr });
 
-        navigate('/', {replace: true})
+        navigate("/", { replace: true });
       }
     } catch (err) {
       alert("Login failed: " + err);
-    }
-    finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   return (

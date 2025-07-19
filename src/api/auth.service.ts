@@ -6,15 +6,15 @@ import {
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
-import { getAuthHeaders, getRefreshToken } from "./base.service";
+import { getAuthHeaders } from "./base.service";
 import { APIResponseModel } from "./models/APIResponseModel";
 
 const REGION = import.meta.env.VITE_REGION; // replace with your region
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID; // replace with your Cognito App Client ID
 const USER_POOL_ID = import.meta.env.VITE_USER_POOL_ID;
 
-const API_URL = import.meta.env.VITE_API_URL
-const authUrl = 'auth/'
+const API_URL = import.meta.env.VITE_API_URL;
+const authUrl = "auth/";
 
 const cognitoClient = new CognitoIdentityProviderClient({ region: REGION });
 
@@ -38,38 +38,12 @@ export const verifyJWT = async (token: string) => {
   }
 };
 
-export const refreshToken = async() => {
-  const refreshToken = getRefreshToken();
-
-  if (!refreshToken) return null;
-
-    const command = new InitiateAuthCommand({
-    AuthFlow: "REFRESH_TOKEN_AUTH",
-    ClientId: CLIENT_ID,
-    AuthParameters: {
-                'REFRESH_TOKEN': refreshToken
-            }
-  });
-
+export const refreshToken = async () => {
   try {
-    const response = await cognitoClient.send(command);
-    if(response.AuthenticationResult){
-      return response.AuthenticationResult;
-    }
-  }
-catch (error) {
-    console.error("Refresh token failed", error);
-    throw error;
-  }
-
-}
-export const signIn = async (username: string, password: string) => {
-   try {
-    const response = await fetch(API_URL + authUrl + 'sign-in', {
-        method: 'POST',
-        credentials: 'include',
-             headers: getAuthHeaders(),
-        body: JSON.stringify({username: username, password: password})
+    const response = await fetch(API_URL + authUrl + "refresh-token", {
+      method: "POST",
+      credentials: "include",
+      headers: getAuthHeaders(),
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
@@ -80,7 +54,25 @@ export const signIn = async (username: string, password: string) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
+export const signIn = async (username: string, password: string) => {
+  try {
+    const response = await fetch(API_URL + authUrl + "sign-in", {
+      method: "POST",
+      credentials: "include",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ username: username, password: password }),
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    return json as APIResponseModel;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const signInWithSession = async (
   username: string,
