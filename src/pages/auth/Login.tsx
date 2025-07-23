@@ -62,11 +62,16 @@ export const Login = () => {
             userId: response.userId,
             userName: response.userName,
             challenge: response.challenge,
-
+            expiresIn: response.expiresIn + Date.now(),
             user: userAttr,
           })
         );
-        setAuth({ ...response, loginResult: "Successfully", user: userAttr });
+        setAuth({
+          ...response,
+          loginResult: "Successfully",
+          user: userAttr,
+          expiresIn: response.expiresIn + Date.now(),
+        });
 
         navigate("/", { replace: true });
       }

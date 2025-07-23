@@ -9,6 +9,7 @@ interface AuthContextType {
   accessToken: string;
   userName: string;
   user: IUser;
+  expiresIn: number;
   setAuth: (auth: Partial<AuthContextType>) => void;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -23,14 +24,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refreshToken: "",
     accessToken: "",
     userName: "",
+    expiresIn: 0,
     user: {
-      email: '',
+      email: "",
       email_verified: false,
-      userId: '',
-      userName: '',
-      nickname: '',
-      sub: ''
-    } ,
+      userId: "",
+      userName: "",
+      nickname: "",
+      sub: "",
+    },
   });
 
   const setAuth = (auth: Partial<AuthContextType>) => {
