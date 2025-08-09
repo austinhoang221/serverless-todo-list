@@ -7,63 +7,80 @@ import { ITodo } from "../../../models/interfaces/ITodo";
 import dayjs from "dayjs";
 
 type InputTodoType = {
-  onSubmit: (todo: ITodo) => void
-}
+  onSubmit: (todo: ITodo) => void;
+};
 export const InputTodo = (props: InputTodoType) => {
-      const formInitState = {
-        title: "", description: "", deadline: ""
-      }
-      const { user, setAuth } = useAuth();
-      const [form, setForm] = React.useState(formInitState);
-      const [isLoading, setIsLoading] = React.useState(false);
-    
-      const resetForm = () => {
-        setForm(formInitState)
-      };
+  const formInitState = {
+    title: "",
+    description: "",
+    deadline: "",
+  };
+  const { user, setAuth } = useAuth();
+  const [form, setForm] = React.useState(formInitState);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-      const saveTodo = async () => {
-    if(form?.title){
-      setIsLoading(true)
-      const response = await CreateTodo({...form, userId: user.sub,prioritized: false})
-      if(response?.body){
-        props.onSubmit(response?.body)
+  const resetForm = () => {
+    setForm(formInitState);
+  };
+
+  const saveTodo = async () => {
+    if (form?.title) {
+      setIsLoading(true);
+      const response = await CreateTodo({
+        ...form,
+        userId: user.sub,
+        prioritized: false,
+      });
+      if (response?.body) {
+        props.onSubmit(response?.body);
         resetForm();
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
   };
-    return(
-      <Flex direction="column" gap="1rem">
-          <Card variation="elevated">
-            <Input
-              placeholder="Add todo"
-              value={form.title}
-              disabled={isLoading}
-              variation="quiet"
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              onKeyDown={(e) => {
-                if(e.key === 'Enter') saveTodo()
-              }}
-
-            />
-            <Flex
-              gap="1rem"
-              justifyContent="space-between"
-              padding="0.5rem"
-              alignItems="center"
-              backgroundColor="var(--amplify-colors-neutral-10)"
+  return (
+    <Flex direction="column" gap="1rem">
+      <Card variation="elevated">
+        <Input
+          placeholder="Add todo"
+          value={form.title}
+          disabled={isLoading}
+          variation="quiet"
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") saveTodo();
+          }}
+        />
+        <Flex
+          gap="1rem"
+          justifyContent="space-between"
+          padding="0.5rem"
+          alignItems="center"
+          backgroundColor="var(--amplify-colors-neutral-10)"
+        >
+          <DatePicker
+            value={form.deadline}
+            onChange={(e) =>
+              setForm({ ...form, deadline: dayjs(e).format("MM/DD/YYYY") })
+            }
+          />
+          {
+            <Button
+              size="small"
+              onClick={saveTodo}
+              disabled={!form?.title}
+              isLoading={isLoading}
             >
-              <DatePicker value={form.deadline} onChange={(e) => setForm({ ...form, deadline: dayjs(e).format('MM/DD/YYYY')  })} />
-              { <Button size="small" onClick={saveTodo} disabled={!form?.title}>
-                {"Add"}
-              </Button>
-              /*{editing && (
+              {"Add"}
+            </Button>
+            /*{editing && (
                 <Button onClick={resetForm} variation="link">
                   Cancel
                 </Button>
-              )} */}
-            </Flex>
-          </Card>
+              )} */
+          }
         </Flex>
-    )
-}
+      </Card>
+    </Flex>
+  );
+};

@@ -12,6 +12,8 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../customHooks/useAuth";
 import { IUser } from "../../models/interfaces/IUser";
 import { signIn } from "../../api/auth.service";
+import { toast, ToastContainer } from "react-toastify";
+import { showToast } from "../../components/toast/Toast";
 
 export const Login = () => {
   const { setAuth } = useAuth();
@@ -36,8 +38,7 @@ export const Login = () => {
     try {
       setIsLoading(true);
       const result = await signIn(formData?.email, formData?.password);
-
-      if (result) {
+      if (result?.statusCode === 200) {
         const userAttr: IUser = {
           email: "",
           email_verified: false,
@@ -58,7 +59,7 @@ export const Login = () => {
           "context",
           JSON.stringify({
             accessToken: response.accessToken,
-            loginresponse: "Successfully",
+            loginResult: "Successfully",
             userId: response.userId,
             userName: response.userName,
             challenge: response.challenge,
@@ -74,7 +75,8 @@ export const Login = () => {
         });
 
         navigate("/", { replace: true });
-      }
+      } else
+        showToast("error", result?.message ?? "Login failed", result?.error);
     } catch (err) {
       alert("Login failed: " + err);
     } finally {
@@ -116,6 +118,7 @@ export const Login = () => {
         <Button variation="primary" onClick={handleLogin} isLoading={isLoading}>
           Login
         </Button>
+        <ToastContainer />
       </Flex>
     </View>
   );

@@ -13,3 +13,8 @@ export const getRefreshToken = () => {
   const refreshToken = context?.refreshToken;
   return refreshToken;
 }
+
+export const handleSignOut = () => {
+  sessionStorage.clear();
+  window.location.href = ''
+}

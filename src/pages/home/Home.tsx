@@ -9,7 +9,7 @@ import { TodoList } from "./table/TodoList";
 import { InputTodo } from "./components/InputTodo";
 
 export const Home = () => {
-  const { user, accessToken } = useAuth();
+  const { user, loginResult } = useAuth();
   const [todos, setTodos] = React.useState<ITodo[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
 
@@ -19,8 +19,8 @@ export const Home = () => {
       setTodos(response?.body);
     };
 
-    if (accessToken) fetchData();
-  }, [accessToken, searchValue]);
+    if (loginResult === "Successfully") fetchData();
+  }, [loginResult, searchValue]);
 
   const onCreate = (todo: ITodo) => {
     const newList = [...todos];
