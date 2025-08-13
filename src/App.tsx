@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import { useAuth } from "./customHooks/useAuth";
 import { ThemeProvider } from "@aws-amplify/ui-react";
-import { AuthProvider } from "./context/AuthContext";
 import { Router } from "./Router";
 import "@aws-amplify/ui-react/styles.css";
 import { refreshToken } from "./api/auth.service";
@@ -46,7 +45,7 @@ const App = () => {
           "context",
           JSON.stringify({
             accessToken: response.body.AccessToken,
-            loginresponse: "Successfully",
+            loginResult: "Successfully",
             userId: context.userId,
             userName: context.userName,
             challenge: context.challenge,
@@ -64,7 +63,7 @@ const App = () => {
 
   const accessTokenWillExpire = (): boolean => {
     let needRefresh = false;
-    if (expiresIn - Date.now() < 30) {
+    if (expiresIn - Date.now() < 30000) {
       needRefresh = true;
     }
 

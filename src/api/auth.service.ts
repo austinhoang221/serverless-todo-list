@@ -61,15 +61,13 @@ export const signIn = async (username: string, password: string) => {
       headers: getAuthHeaders(),
       body: JSON.stringify({ username: username, password: password }),
     });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
 
     const json = await response.json();
     return json as APIResponseModel;
   } catch (error) {
     console.error(error);
   }
+ 
 };
 
 export const signInWithSession = async (
@@ -184,3 +182,18 @@ export const signOut = async () => {
     throw error;
   }
 };
+
+export const signOut = async() => {
+  try {
+    const response = await fetch(API_URL + authUrl + "sign-out", {
+      method: "POST",
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+
+    const json = await response.json();
+    return json as APIResponseModel;
+  } catch (error) {
+    console.error(error);
+  }
+}
