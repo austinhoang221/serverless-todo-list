@@ -7,15 +7,23 @@ import dayjs from "dayjs";
 import { GetListTodo } from "../../api/todo.service";
 import { TodoList } from "./table/TodoList";
 import { InputTodo } from "./components/InputTodo";
+import {
+  HomeContext,
+  HomeContextType,
+  HomeProvider,
+} from "../../context/HomeContext";
+import { useHomeContext } from "../../customHooks/useHomeContext";
 
 export const Home = () => {
   const { user, loginResult } = useAuth();
   const [todos, setTodos] = React.useState<ITodo[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
+  const { setLoading } = useHomeContext();
 
   React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetListTodo(searchValue);
+      setLoading(false);
       setTodos(response?.body);
     };
 

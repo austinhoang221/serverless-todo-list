@@ -34,6 +34,20 @@ export const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  function msToDateTime(ms: number): string {
+    const date = new Date(ms);
+
+    // Format: YYYY-MM-DD HH:mm:ss
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
   const handleLogin = async () => {
     try {
       setIsLoading(true);
@@ -54,7 +68,9 @@ export const Login = () => {
         });
 
         userAttr.userId = response.userId ?? "";
-
+        console.log(
+          "Set: " + msToDateTime(response.expiresIn * 1000 + Date.now())
+        );
         sessionStorage.setItem(
           "context",
           JSON.stringify({
@@ -63,7 +79,7 @@ export const Login = () => {
             userId: response.userId,
             userName: response.userName,
             challenge: response.challenge,
-            expiresIn: response.expiresIn + Date.now(),
+            expiresIn: response.expiresIn * 1000 + Date.now(),
             user: userAttr,
           })
         );
@@ -71,7 +87,7 @@ export const Login = () => {
           ...response,
           loginResult: "Successfully",
           user: userAttr,
-          expiresIn: response.expiresIn + Date.now(),
+          expiresIn: response.expiresIn * 1000 + Date.now(),
         });
 
         navigate("/", { replace: true });

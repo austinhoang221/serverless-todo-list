@@ -5,6 +5,7 @@ import React from "react";
 import { DatePicker } from "../../../components/date-picker/DatePicker";
 import { ITodo } from "../../../models/interfaces/ITodo";
 import dayjs from "dayjs";
+import { HomeContext, HomeContextType } from "../../../context/HomeContext";
 
 type InputTodoType = {
   onSubmit: (todo: ITodo) => void;
@@ -18,6 +19,7 @@ export const InputTodo = (props: InputTodoType) => {
   const { user, setAuth } = useAuth();
   const [form, setForm] = React.useState(formInitState);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { setLoading } = React.useContext(HomeContext) as HomeContextType;
 
   const resetForm = () => {
     setForm(formInitState);

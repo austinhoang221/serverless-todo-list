@@ -45,9 +45,6 @@ export const refreshToken = async () => {
       credentials: "include",
       headers: getAuthHeaders(),
     });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
 
     const json = await response.json();
     return json as APIResponseModel;
