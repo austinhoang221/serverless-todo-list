@@ -1,4 +1,3 @@
-import { AdminGetUserCommandOutput } from "@aws-sdk/client-cognito-identity-provider";
 import React from "react";
 import { createContext } from "react";
 import { IUser } from "../models/interfaces/IUser";

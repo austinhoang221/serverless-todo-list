@@ -1,10 +1,5 @@
 import {
-  Button,
   Flex,
-  Heading,
-  Link,
-  TextField,
-  Text,
   SearchField,
   Avatar,
   Menu,

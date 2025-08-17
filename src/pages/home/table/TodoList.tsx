@@ -1,5 +1,4 @@
-import React from "react";
-import { DeleteTodo, GetListTodo, UpdateTodo } from "../../../api/todo.service";
+import { DeleteTodo, UpdateTodo } from "../../../api/todo.service";
 import { ITodo } from "../../../models/interfaces/ITodo";
 import {
   Loader,
@@ -11,7 +10,6 @@ import {
 } from "@aws-amplify/ui-react";
 import dayjs from "dayjs";
 import { Star, Trash } from "lucide-react";
-import { HomeContext, HomeContextType } from "../../../context/HomeContext";
 import { showToast } from "../../../components/toast/Toast";
 import { useHomeContext } from "../../../customHooks/useHomeContext";
 
