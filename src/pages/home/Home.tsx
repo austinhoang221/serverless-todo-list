@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Text } from "@aws-amplify/ui-react";
+import { Flex, Heading, Text } from "@aws-amplify/ui-react";
 import { Nav } from "./nav/Nav";
 import React from "react";
 import { useAuth } from "../../customHooks/useAuth";
@@ -7,11 +7,7 @@ import dayjs from "dayjs";
 import { GetListTodo } from "../../api/todo.service";
 import { TodoList } from "./table/TodoList";
 import { InputTodo } from "./components/InputTodo";
-import {
-  HomeContext,
-  HomeContextType,
-  HomeProvider,
-} from "../../context/HomeContext";
+
 import { useHomeContext } from "../../customHooks/useHomeContext";
 
 export const Home = () => {
