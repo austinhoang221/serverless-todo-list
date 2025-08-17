@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # Install Node.js and npm/yarn if not already part of the CodeBuild environment image
+      # For example, if using a standard CodeBuild image with Node.js pre-installed:
+      # - echo "Node version: $(node -v)"
+      # - echo "npm version: $(npm -v)"
+      - npm install # or yarn install if using yarn
+  build:
+    commands:
+      - npm run build 
+  post_build:
+    commands:
+      - VERSION_TAG="v$(date +%Y.%m.%d).$CODEBUILD_BUILD_NUMBER"
+      - git config --global user.email "hbinhit221@gmail.com"
+      - git config --global user.name "austinhoang221"
+      - git tag -a $VERSION_TAG -m "Deployed version $VERSION_TAG"
+      - git push origin $VERSION_TAG
