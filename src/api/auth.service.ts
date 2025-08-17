@@ -1,9 +1,7 @@
 import {
   AdminGetUserCommand,
   CognitoIdentityProviderClient,
-  ConfirmSignUpCommand,
   InitiateAuthCommand,
-  SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { getAuthHeaders } from "./base.service";
@@ -121,22 +119,24 @@ export const signUp = async (
   nickName: string,
   password: string
 ) => {
-  const command = new SignUpCommand({
-    ClientId: CLIENT_ID,
-    Username: email,
-    Password: password,
-    UserAttributes: [
-      {
-        Name: "nickname",
-        Value: nickName,
-      },
-    ],
-  });
   try {
-    const response = await cognitoClient.send(command);
+    const response = await fetch(API_URL + authUrl + "sign-up", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        email: email,
+        nickname: nickName,
+        password: password,
+      }),
+    });
 
     console.log("SignUp success:", response);
-    return response;
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    return json as APIResponseModel;
   } catch (error) {
     console.error("SignUp error:", error);
     throw error;
@@ -144,22 +144,24 @@ export const signUp = async (
 };
 
 export const confirmSignUpUser = async (email: string, code: string) => {
-  const command = new ConfirmSignUpCommand({
-    ClientId: CLIENT_ID,
-    Username: email,
-    ConfirmationCode: code,
-  });
-
   try {
-    const response = await cognitoClient.send(command);
+    const response = await fetch(API_URL + authUrl + "confirm-code", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ email: email, code: code }),
+    });
     console.log("Confirmation success:", response);
-
-    return response;
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const json = await response.json();
+    return json as APIResponseModel;
   } catch (error) {
     console.error("Confirmation error:", error);
     throw error;
   }
 };
+
 
 export const signOut = async() => {
   try {
