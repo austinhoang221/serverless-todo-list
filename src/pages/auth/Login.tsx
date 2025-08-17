@@ -1,0 +1,141 @@
+import {
+  Button,
+  Flex,
+  Heading,
+  Link,
+  TextField,
+  Text,
+  View,
+} from "@aws-amplify/ui-react";
+import React from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import { useAuth } from "../../customHooks/useAuth";
+import { IUser } from "../../models/interfaces/IUser";
+import { signIn } from "../../api/auth.service";
+import { toast, ToastContainer } from "react-toastify";
+import { showToast } from "../../components/toast/Toast";
+
+export const Login = () => {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+  const [formData, setFormData] = React.useState({ email: "", password: "" });
+  const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const emailParam = searchParams.get("email");
+    if (emailParam)
+      setFormData((prev) => {
+        return { ...prev, email: emailParam };
+      });
+  }, [searchParams]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  function msToDateTime(ms: number): string {
+    const date = new Date(ms);
+
+    // Format: YYYY-MM-DD HH:mm:ss
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const result = await signIn(formData?.email, formData?.password);
+      if (result?.statusCode === 200) {
+        const userAttr: IUser = {
+          email: "",
+          email_verified: false,
+          userId: "",
+          userName: "",
+          nickname: "",
+          sub: "",
+        };
+        const response = result.body;
+        response.attributes?.forEach((attr: any) => {
+          (userAttr[attr.Name as string as keyof IUser] as string) =
+            attr.Value ?? "";
+        });
+
+        userAttr.userId = response.userId ?? "";
+        console.log(
+          "Set: " + msToDateTime(response.expiresIn * 1000 + Date.now())
+        );
+        sessionStorage.setItem(
+          "context",
+          JSON.stringify({
+            accessToken: response.accessToken,
+            loginResult: "Successfully",
+            userId: response.userId,
+            userName: response.userName,
+            challenge: response.challenge,
+            expiresIn: response.expiresIn * 1000 + Date.now(),
+            user: userAttr,
+          })
+        );
+        setAuth({
+          ...response,
+          loginResult: "Successfully",
+          user: userAttr,
+          expiresIn: response.expiresIn * 1000 + Date.now(),
+        });
+
+        navigate("/", { replace: true });
+      } else
+        showToast("error", result?.message ?? "Login failed", result?.error);
+    } catch (err) {
+      alert("Login failed: " + err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return (
+    <View
+      maxWidth="400px"
+      margin="auto"
+      padding="2rem"
+      borderRadius="6px"
+      border="1px solid var(--amplify-colors-primary-40)"
+      className="authentication"
+      boxShadow="3px 3px 5px 6px var(--amplify-colors-primary-20)"
+    >
+      <Heading level={4}>Login</Heading>
+      <Flex direction="column" gap="1rem" marginTop="1rem">
+        <TextField
+          name="email"
+          label="Email"
+          type="email"
+          value={formData?.email}
+          onChange={handleChange}
+        />
+        <TextField
+          name="password"
+          label="Password"
+          type="password"
+          value={formData?.password}
+          onChange={handleChange}
+        />
+        <Text className="">
+          Not have an account yet?
+          <Button marginLeft="0.25rem" variation="link" padding="0">
+            <Link href="/signUp">Sign Up</Link>
+          </Button>
+        </Text>
+        <Button variation="primary" onClick={handleLogin} isLoading={isLoading}>
+          Login
+        </Button>
+        <ToastContainer />
+      </Flex>
+    </View>
+  );
+};
